@@ -67,10 +67,17 @@ class JobController extends Controller
 
     public function editJob()
     {
-    	$validateJob = $this->request->validate([
-    		'title' => 'required|max:255',
-    		'description' => 'required|max:255'
-    	]);
+    	$validator = Validator::make($this->request->all(),
+                            [
+                                'title' => 'required|max:255',
+                                'description' => 'required|max:255'
+                            ]           
+                        );
+
+
+        if($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
 
     	$jobData = $this->request->all();
     	$editJob = $this->job->whereId($jobData['id'])->update(['title' => $jobData['title'], 'description' => $jobData['description']]);
